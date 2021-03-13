@@ -17,6 +17,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var btnOptionThree: UIButton!
     @IBOutlet weak var card: UIView!
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //card.clipsToBounds = true;
@@ -63,6 +65,19 @@ class ViewController: UIViewController {
     }
     
     
+    func updateFlashcard(question: String, answer: String, extraAnswerOne: String?, extraAnswerTwo: String?) {
+        frontLabel.text = question
+        backLabel.text = answer
+        
+        btnOptionOne.setTitle(extraAnswerOne, for: .normal)
+        btnOptionTwo.setTitle(answer, for: .normal)
+        btnOptionThree.setTitle(extraAnswerTwo, for: .normal)
+
+        
+        
+    }
+    
+    
     @IBAction func didTapOptionOne(_ sender: Any) {
         btnOptionOne.isHidden = true;
         
@@ -84,5 +99,25 @@ class ViewController: UIViewController {
         btnOptionThree.isHidden = true;
         
     }
-}
 
+
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        let navigationController = segue.destination as! UINavigationController
+        
+        let creationController = navigationController.topViewController as! CreationViewController
+       
+        if(segue.identifier == "EditSegue")
+        {
+            creationController.initialQuestion = frontLabel.text
+            creationController.initialAnswer = backLabel.text
+            creationController.initialAnswer =
+                btnOptionTwo.currentTitle
+            creationController.initialExtraAns1 = btnOptionOne.currentTitle
+            creationController.initialExtraAns2 = btnOptionThree.currentTitle
+        
+        }
+        creationController.flashcardsController = self
+    }
+}
