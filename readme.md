@@ -1,9 +1,27 @@
 ## FlashCards
 
+## Lab 3
+
+### App Description
+This app now adds functionality to browse through multiple flashcards and delete them, as well as edit them. as well as saving progress even after shutting off app.
+
+### App Walk-thoughs
+![](https://i.imgur.com/mFWpi1Q.gif)
+
+## Required
+- [x] User can browse through multiple flashcards
+- [x] User can re-open the app and see previously created flashcards
+- [x] Push code to GitHub
+## Optional
+- [x] User can delete a flashcard
+- [x] User can edit existing flashcard
+- [x] User can store multiple choice questions
+
+
 ## Lab 2
 
 ### App Description
-`TODO://` This app adds onto the premise of a flashcards app by adding functionality to editing flashcards and adding cards as well.
+This app adds onto the premise of a flashcards app by adding functionality to editing flashcards and adding cards as well.
 
 ### App Walk-though
 
@@ -22,7 +40,7 @@
 ## Lab 1
 
 ### App Description
- This app is a basic flashcard app that utilizes multiple choices to guess what is the answer to the question.
+This app is a basic flashcard app that utilizes multiple choices to guess what is the answer to the question.
 
 ### App Walk-though
 ![](https://i.imgur.com/iLrQfN0.gif)
@@ -38,3 +56,4 @@
 - [x] Toggle the flashcard between the question side and the answer side
 - [x] Style the question and answer side of the card to better distinguish between the two sides
 - [x] Add selectable multiple choice answers beneath the card
+
