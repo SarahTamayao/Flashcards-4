@@ -303,7 +303,7 @@ class ViewController: UIViewController {
         saveAllFlashcardsToDisk()
         
         print(flashcards.count)
-        if(flashcards.count > 1)
+        if(flashcards.count > 1) 
         {
             deleteButton.isEnabled = true
         }
