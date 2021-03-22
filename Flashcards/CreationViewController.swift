@@ -23,6 +23,8 @@ class CreationViewController: UIViewController {
     var initialExtraAns1: String?
     var initialExtraAns2: String?
     
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -62,8 +64,21 @@ class CreationViewController: UIViewController {
         }
         
         else{
-            flashcardsController.updateFlashcard(question: questionText!, answer: answerText!, extraAnswerOne: extraAnswer1Text, extraAnswerTwo: extraAnswer2Text)
-
+            var isExisting = false
+            if initialQuestion != nil
+            {
+                isExisting = true
+            }
+            
+            flashcardsController.updateFlashcard(question: questionText!, answer: answerText!, extraAnswerOne: extraAnswer1Text, extraAnswerTwo: extraAnswer2Text, isExisting: isExisting)
+            
+            if(flashcardsController.flashcards.count != 0)
+            {
+                flashcardsController.deleteButton.isEnabled = true
+            }
+            else{
+                flashcardsController.deleteButton.isEnabled = false
+            }
             
             dismiss(animated: true)
         }

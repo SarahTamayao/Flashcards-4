@@ -10,6 +10,9 @@ import UIKit
 struct Flashcard{
     var question: String
     var answer: String
+    var extraAnswer1: String
+    var extraAnswer2: String
+    
 }
 
 class ViewController: UIViewController {
@@ -72,11 +75,23 @@ class ViewController: UIViewController {
         
         if flashcards.count == 0
         {
-            updateFlashcard(question: "What is my pick for best open world game?", answer: "Skyrim", extraAnswerOne: "CyberPunk 2077", extraAnswerTwo: "GTA5")
+            print("In if")
+            updateFlashcard(question: "What is my pick for best open world game?", answer: "Skyrim", extraAnswerOne: "CyberPunk 2077", extraAnswerTwo: "GTA5", isExisting: false)
+            deleteButton.isEnabled = false
+        }
+        
+        else if flashcards.count == 1
+        {
+            print(flashcards.count)
+            print("In else if")
+            updateLabels()
+            updateNextPrevButtons()
             deleteButton.isEnabled = false
         }
         
         else{
+            print(flashcards.count)
+            print("In else")
             updateLabels()
             updateNextPrevButtons()
             deleteButton.isEnabled = true
@@ -104,28 +119,53 @@ class ViewController: UIViewController {
     }
     
     
-    func updateFlashcard(question: String, answer: String, extraAnswerOne: String?, extraAnswerTwo: String?) {
+    func updateFlashcard(question: String, answer: String, extraAnswerOne: String?, extraAnswerTwo: String?, isExisting: Bool) {
         
-        let flashcard = Flashcard(question: question, answer: answer)
+        let flashcard = Flashcard(question: question, answer: answer, extraAnswer1: extraAnswerOne!, extraAnswer2: extraAnswerTwo!)
         frontLabel.text = flashcard.question
         backLabel.text = flashcard.answer
         
-        flashcards.append(flashcard)
+       
         
-        print("Added new Flashcard")
-        print("We now have \(flashcards.count) flashcards")
-        
-        currentIndex = flashcards.count - 1
-        print("Our current index is \(currentIndex)")
-      
-        
-        btnOptionOne.setTitle(extraAnswerOne, for: .normal)
-        btnOptionTwo.setTitle(answer, for: .normal)
-        btnOptionThree.setTitle(extraAnswerTwo, for: .normal)
+        if(isExisting)
+        {
+            flashcards[currentIndex] = flashcard
+            print(question)
+            
+            btnOptionOne.setTitle(extraAnswerOne, for: .normal)
+            btnOptionTwo.setTitle(answer, for: .normal)
+            btnOptionThree.setTitle(extraAnswerTwo, for: .normal)
 
-        updateNextPrevButtons()
+            updateNextPrevButtons()
+            
+            updateLabels()
+            
+            saveAllFlashcardsToDisk()
+        }
         
-        updateLabels()
+        else{
+            flashcards.append(flashcard)
+            
+            print("Added new Flashcard")
+            print("We now have \(flashcards.count) flashcards")
+            
+            currentIndex = flashcards.count - 1
+            print("Our current index is \(currentIndex)")
+            
+            print(question)
+            
+            btnOptionOne.setTitle(extraAnswerOne, for: .normal)
+            btnOptionTwo.setTitle(answer, for: .normal)
+            btnOptionThree.setTitle(extraAnswerTwo, for: .normal)
+
+            updateNextPrevButtons()
+            
+            updateLabels()
+            
+            saveAllFlashcardsToDisk()
+        }
+      
+
         
     }
     
@@ -156,6 +196,10 @@ class ViewController: UIViewController {
         
         frontLabel.text = currentFlashcard.question
         backLabel.text = currentFlashcard.answer
+        
+        btnOptionOne.setTitle(currentFlashcard.extraAnswer1, for: .normal)
+        btnOptionTwo.setTitle(currentFlashcard.answer, for: .normal)
+        btnOptionThree.setTitle(currentFlashcard.extraAnswer2, for: .normal)
     }
     
     
@@ -163,11 +207,11 @@ class ViewController: UIViewController {
         
         let dictionaryArray = flashcards.map
         {
-            (card) -> [String: String] in return ["question": card.question, "answer": card.answer]
+            (card) -> [String: String] in return ["question": card.question, "answer": card.answer, "extraAnswer1": card.extraAnswer1, "extraAnswer2": card.extraAnswer2]
         }
                                              
         
-        UserDefaults.standard.set(flashcards, forKey: "flashcards")
+        UserDefaults.standard.set(dictionaryArray, forKey: "flashcards")
         
         print("Flashcards saved to UserDefaults")
     }
@@ -177,7 +221,7 @@ class ViewController: UIViewController {
         if let dictionaryArray = UserDefaults.standard.array(forKey: "flashcards") as? [[String: String]]
         {
             let savedCards = dictionaryArray.map {
-                dictionary -> Flashcard in return Flashcard(question: dictionary["question"]!, answer: dictionary["answer"]!)
+                dictionary -> Flashcard in return Flashcard(question: dictionary["question"]!, answer: dictionary["answer"]!, extraAnswer1: dictionary["extraAnswer1"] ?? "", extraAnswer2: dictionary["extraAnswer2"] ?? "")
             }
             
             flashcards.append(contentsOf: savedCards)
@@ -245,11 +289,26 @@ class ViewController: UIViewController {
     
     func deleteCurrentFlashcard()
     {
+        print("in deleteCurrentFlashcard")
         flashcards.remove(at: currentIndex)
         
         if currentIndex > flashcards.count - 1
         {
             currentIndex = flashcards.count - 1
+        }
+        
+        updateNextPrevButtons()
+        updateLabels()
+        
+        saveAllFlashcardsToDisk()
+        
+        print(flashcards.count)
+        if(flashcards.count > 1)
+        {
+            deleteButton.isEnabled = true
+        }
+        else{
+            deleteButton.isEnabled = false
         }
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
