@@ -1,9 +1,26 @@
 ## FlashCards
 
+## Lab 3
+
+### App Description
+This app now adds functionality to browse through multiple flashcards and delete them, as well as edit them. as well as saving progress even after shutting off app.
+
+### App Walk-thoughs
+![ezgif-3-42611f24ea16](https://user-images.githubusercontent.com/44147527/111934580-ec4e5100-8a7e-11eb-821d-2a2fb5171ad1.gif)
+
+## Required
+- [x] User can browse through multiple flashcards
+- [x] User can re-open the app and see previously created flashcards
+- [x] Push code to GitHub
+## Optional
+- [x] User can delete a flashcard
+- [x] User can edit existing flashcard
+- [x] User can store multiple choice questions
+
 ## Lab 2
 
 ### App Description
-`TODO://` This app adds onto the premise of a flashcards app by adding functionality to editing flashcards and adding cards as well.
+This app adds onto the premise of a flashcards app by adding functionality to editing flashcards and adding cards as well.
 
 ### App Walk-though
 
