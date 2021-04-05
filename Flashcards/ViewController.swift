@@ -33,6 +33,14 @@ class ViewController: UIViewController {
     
     var currentIndex = 0
     
+    var tappedOnNext = false
+    
+    var tappedOnPrev = false
+    
+    var mySwitch = false
+    
+    var correctAnswerButton: UIButton!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,24 +108,96 @@ class ViewController: UIViewController {
      
     }
 
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        card.alpha = 0.0
+        card.transform = CGAffineTransform.identity.scaledBy(x: 0.75, y: 0.75)
+        
+        UIView.animate(withDuration: 0.6, delay: 0.5, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [], animations: {
+            self.card.alpha = 1.0
+            self.card.transform = CGAffineTransform.identity
+        })
+    }
 
     @IBAction func didTapOnFlashcard(_ sender: Any) {
         
-        if(frontLabel.isHidden == false)
-        {
-            frontLabel.isHidden = true;
-            return;
-        }
-        
-        else if(frontLabel.isHidden == true)
-        {
-            frontLabel.isHidden = false;
-            return;
-        }
-        
+        flipFlashcard()
         
     }
     
+    
+    func flipFlashcard()
+    {
+       
+        if(frontLabel.isHidden == false)
+        {
+        UIView.transition(with: card, duration: 0.3, options: .transitionFlipFromRight, animations: {self.frontLabel.isHidden = true})
+//            frontLabel.isHidden = true;
+            return;
+        }
+
+        else if(frontLabel.isHidden == true)
+        {
+        UIView.transition(with: card, duration: 0.3, options: .transitionFlipFromRight, animations: {self.frontLabel.isHidden = false})
+          //  frontLabel.isHidden = false;
+            return;
+        }
+        
+
+    }
+    
+    
+    func animateCardOut()
+    {
+        
+        if(tappedOnNext == true)
+        {
+            mySwitch = true
+            UIView.animate(withDuration: 0.3, animations: { self.card.transform = CGAffineTransform.identity.translatedBy(x: -300.0, y: 0.0) }, completion: { finished in
+                
+                self.updateLabels()
+                
+                self.animateCardIn()
+                
+            })
+        }
+        
+        else if (tappedOnPrev == true)
+        {
+            mySwitch = false
+            UIView.animate(withDuration: 0.3, animations: { self.card.transform = CGAffineTransform.identity.translatedBy(x: 300.0, y: 0.0) }, completion: { finished in
+                
+                self.updateLabels()
+                
+                self.animateCardIn()
+                
+            })
+        }
+
+    }
+    
+    func animateCardIn()
+    {
+        
+        if(mySwitch == true)
+        {
+            card.transform = CGAffineTransform.identity.translatedBy(x: 300.0, y: 0.0)
+        }
+        
+        
+        else if(mySwitch == false)
+        {
+            card.transform = CGAffineTransform.identity.translatedBy(x: -300.0, y: 0.0)
+        }
+        
+        UIView.animate(withDuration: 0.3)
+        {
+            self.card.transform = CGAffineTransform.identity
+        }
+    }
     
     func updateFlashcard(question: String, answer: String, extraAnswerOne: String?, extraAnswerTwo: String?, isExisting: Bool) {
         
@@ -197,9 +277,23 @@ class ViewController: UIViewController {
         frontLabel.text = currentFlashcard.question
         backLabel.text = currentFlashcard.answer
         
-        btnOptionOne.setTitle(currentFlashcard.extraAnswer1, for: .normal)
-        btnOptionTwo.setTitle(currentFlashcard.answer, for: .normal)
-        btnOptionThree.setTitle(currentFlashcard.extraAnswer2, for: .normal)
+//        btnOptionOne.setTitle(currentFlashcard.extraAnswer1, for: .normal)
+//        btnOptionTwo.setTitle(currentFlashcard.answer, for: .normal)
+//        btnOptionThree.setTitle(currentFlashcard.extraAnswer2, for: .normal)
+        
+        let buttons = [btnOptionOne, btnOptionTwo, btnOptionThree].shuffled()
+        let answers = [currentFlashcard.answer, currentFlashcard.extraAnswer1, currentFlashcard.extraAnswer2].shuffled()
+        
+        for (button, answer) in zip (buttons, answers)
+        {
+            button?.setTitle(answer, for: .normal)
+            
+            if answer == currentFlashcard.answer
+            {
+                correctAnswerButton = button
+            }
+        }
+        
     }
     
     
@@ -230,43 +324,83 @@ class ViewController: UIViewController {
         
     }
     @IBAction func didTapOptionOne(_ sender: Any) {
-        btnOptionOne.isHidden = true;
+        
+        if btnOptionOne == correctAnswerButton
+        {
+            flipFlashcard()
+            btnOptionOne.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
+
+        }
+        
+        else{
+            frontLabel.isHidden = false
+            btnOptionOne.isEnabled = false
+            btnOptionOne.backgroundColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+
+        }
+        
+        
         
     }
     
     @IBAction func didTapOptionTwo(_ sender: Any) {
-        frontLabel.isHidden = true;
-        btnOptionTwo.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1);
-        
-        if(btnOptionOne.isHidden == false || btnOptionThree.isHidden == false)
+        if btnOptionTwo == correctAnswerButton
         {
-            btnOptionOne.backgroundColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1);
-            btnOptionThree.backgroundColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1);
+            flipFlashcard()
+            btnOptionTwo.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
+        }
+        
+        else{
+            frontLabel.isHidden = false
+            btnOptionTwo.isEnabled = false
+            btnOptionTwo.backgroundColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
         }
         
     }
     
     @IBAction func didTapOptionThree(_ sender: Any) {
-        btnOptionThree.isHidden = true;
+        if btnOptionThree == correctAnswerButton
+        {
+            flipFlashcard()
+            btnOptionThree.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
+        }
         
+        else{
+            frontLabel.isHidden = false
+            btnOptionThree.isEnabled = false
+            btnOptionThree.backgroundColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        }
     }
 
     @IBAction func didTapOnPrev(_ sender: Any) {
+        
+        tappedOnPrev = true
+        
         currentIndex = currentIndex - 1
         
         updateLabels()
         
         updateNextPrevButtons()
         
+        animateCardOut()
+        
+        tappedOnPrev = false
     }
     
 
     @IBAction func didTapOnNext(_ sender: Any) {
+       
+        tappedOnNext = true
+        
         currentIndex = currentIndex + 1
         
         updateLabels()
         
         updateNextPrevButtons()
+        
+        animateCardOut()
+        
+        tappedOnNext = false
     }
     
     
